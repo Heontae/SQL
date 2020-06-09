@@ -19,7 +19,7 @@ order by hire_date asc ;
 */
 select  job_title,
         max_salary
-from jobs
+from jobs 
 order by max_salary desc ;
 
 
