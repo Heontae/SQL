@@ -133,7 +133,7 @@ SELECT
     jo.job_title,
     sums
 FROM
-    jobs                                                                    jo,
+    jobs jo,
     (
         SELECT
             job_id,
@@ -142,7 +142,7 @@ FROM
             employees
         GROUP BY
             job_id
-    )          emp
+    ) emp
 WHERE
     jo.job_id = emp.job_id
 ORDER BY
@@ -157,7 +157,7 @@ SELECT
     emp.first_name     "이름",
     emp.salary         "급여"
 FROM
-    employees                                                                             emp,
+    employees emp,
     (
         SELECT
             AVG(salary) avgs,
@@ -166,7 +166,7 @@ FROM
             employees
         GROUP BY
             department_id
-    )       emp2
+    ) emp2
 WHERE
         emp.department_id = emp2.department_id
     AND emp.salary > avgs
@@ -175,28 +175,34 @@ ORDER BY
 
 /*문제8.
 직원 입사일이 11번째에서 15번째의 직원의 사번, 이름, 급여, 입사일을 입사일 순서로 출력하세요*/
+
 SELECT
     rn,
-    emp2.employee_id  "사번",
-    emp2.first_name   "이름",
-    emp2.salary       "급여",
-    emp2.hire_date    "입사일"
-    from(
-SELECT
-    ROWnum rn,
-    emp.employee_id ,
-    emp.first_name   ,
-    emp.salary     ,
-    emp.hire_date  
+    emp2.employee_id    "사번",
+    emp2.first_name     "이름",
+    emp2.salary         "급여",
+    emp2.hire_date      "입사일"
 FROM
-( SELECT
-    employee_id  ,
-    first_name   ,
-    salary       ,
-    hire_date   
-FROM
-    employees
-order by hire_date asc )emp
-)emp2
-where
-rn>=11 and rn<=15;
+    (
+        SELECT
+            ROWNUM rn,
+            emp.employee_id,
+            emp.first_name,
+            emp.salary,
+            emp.hire_date
+        FROM
+            (
+                SELECT
+                    employee_id,
+                    first_name,
+                    salary,
+                    hire_date
+                FROM
+                    employees
+                ORDER BY
+                    hire_date ASC
+            ) emp
+    ) emp2
+WHERE
+        rn >= 11
+    AND rn <= 15;
