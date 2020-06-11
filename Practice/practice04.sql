@@ -72,7 +72,9 @@ WHERE
             employees
         WHERE
             job_id = 'ST_MAN'
-    ); 
+    )
+order by
+salary desc; 
 
 /*문제5. 
 각 부서별로 최고의 급여를 받는 사원의 직원번호(employee_id), 이름(first_name)과 급여(salary) 부서번호(department_id)를 조회하세요 
@@ -82,15 +84,15 @@ WHERE
 -- 조건절비교
 
 SELECT
-    employee_id    "직원번호",
-    first_name     "이름",
-    salary         "급여",
-    department_id  "부서번호"
+    em.employee_id    "직원번호",
+    em.first_name     "이름",
+    em.salary         "급여",
+    em.department_id  "부서번호"
 FROM
-    employees
+    employees em
 WHERE
-    ( department_id,
-      salary ) IN (
+    ( em.department_id,
+      em.salary ) IN (
         SELECT
             department_id,
             MAX(salary)
@@ -128,10 +130,10 @@ ORDER BY
 각 업무(job) 별로 연봉(salary)의 총합을 구하고자 합니다. 
 연봉 총합이 가장 높은 업무부터 업무명(job_title)과 연봉 총합을 조회하시오 
 (19건)*/
-
+--테이블 절
 SELECT
-    jo.job_title,
-    sums
+    jo.job_title "업무명",
+    t.sums "연봉총합"
 FROM
     jobs jo,
     (
@@ -142,12 +144,23 @@ FROM
             employees
         GROUP BY
             job_id
-    ) emp
+    ) t
 WHERE
-    jo.job_id = emp.job_id
+    jo.job_id = t.job_id
 ORDER BY
     sums DESC;
-
+--조건절
+SELECT
+    jo.job_title "업무명",
+    sum(em.salary) "연봉 총합"
+FROM
+employees em , jobs jo
+where
+em.job_id = jo.job_id
+GROUP by
+jo.job_title
+order by
+sum(em.salary) desc;
 /*문제7.
 자신의 부서 평균 급여보다 연봉(salary)이 많은 직원의 직원번호(employee_id), 이름(first_name)과 급여(salary)을 조회하세요 
 (38건)*/
@@ -177,7 +190,6 @@ ORDER BY
 직원 입사일이 11번째에서 15번째의 직원의 사번, 이름, 급여, 입사일을 입사일 순서로 출력하세요*/
 
 SELECT
-    rn,
     emp2.employee_id    "사번",
     emp2.first_name     "이름",
     emp2.salary         "급여",
